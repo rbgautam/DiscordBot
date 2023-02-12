@@ -1,5 +1,5 @@
-const dotenv = require('dotenv')
-
+const dotenv = require('dotenv');
+const httpUploadData = require('./http/upload');
 dotenv.config({path:'./config/config.env'});
 
 
@@ -69,11 +69,32 @@ client.on(Events.MessageCreate, message => {
 			sub = sub.substr(0, sub.length - 2)
 			message.attachments.forEach(attachment => {
 				const ImageLink = attachment.proxyURL;
+				const ImageID = ImageLink.split('/');
+				console.log('ImageID',ImageID[4]);
+				let clientUserID = ''
+				if (sub.indexOf('|') > -1){
+					clientUserID = sub.split('|');
+					clientUserID = clientUserID[1].split('=')[1];
+					console.log('clientUserID=',clientUserID);
+				}
+					
+				const isoStr = new Date().toISOString();
 				// message.channel.send(`\`/imagine \n ${ImageLink} , ${sub}\``);
-				message.channel.send(`\`/imagine \n ${sub}\``);
+				const promptData = {'UserID':client.user.id,
+									'ClientUserID': clientUserID, // always add at the end of the prompt |USERID = 45674124741|
+									'ImageID' : ImageID[4], 
+									'Prompt':sub,
+									'ImgeURL':ImageLink,
+									'Created': isoStr }
+				// console.log(promptData);
+				httpUploadData(promptData);
 
+				message.channel.send(`\`/imagine \``);
+				message.channel.send(`\`prompt: ${sub}\``);
+				
 			});
 		}
+		//message.channel.send('/imagine photo of a Gorgeous Asian woman, blue hair, close-up, watching camera, top view, too much fog, photorealistic, 8k');
 	}
 });
 // Log in to Discord with your client's token
