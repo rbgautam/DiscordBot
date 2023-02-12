@@ -70,7 +70,7 @@ client.on(Events.MessageCreate, message => {
 			message.attachments.forEach(attachment => {
 				const ImageLink = attachment.proxyURL;
 				const ImageID = ImageLink.split('/');
-				console.log('ImageID',ImageID[4]);
+				// console.log('ImageID',ImageID[4]);
 				let clientUserID = ''
 				if (sub.indexOf('|') > -1){
 					clientUserID = sub.split('|');
@@ -98,7 +98,5 @@ client.on(Events.MessageCreate, message => {
 	}
 });
 // Log in to Discord with your client's token
-// client.login(token);
-
 //make sure this line is the last line
 client.login(process.env.CLIENT_TOKEN); //login bot using token
